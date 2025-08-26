@@ -61,10 +61,4 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
   Different menus and capabilities for users and admins.
 
 ---
-
-## ⚙️ Getting Started
-
-1. **Compile**  
-   Make sure you have a C++ compiler:  
-   ```bash
    g++ -o book_reader OnlineBookReader.cpp
