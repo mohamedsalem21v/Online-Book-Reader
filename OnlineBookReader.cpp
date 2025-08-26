@@ -73,15 +73,16 @@ public:
         cout << "Enter Author Name: ";
         getline(cin,str);
         set_author_name(str);
-        cout << "Enter how many pages: ";
+        cout << "Enter How many pages: ";
         int n;
         cin >> n;
+        cin.ignore();
         set_cnt_of_pages(n);
         vector<string> entered_pages;
         for(int i = 0; i < n; i++)
         {
-            cout << "Enter page # " << i+1 << ": "; 
-            cin >> str;
+            cout << "Enter page # " << i+1 << ": ";  
+            getline(cin,str);
             pages.push_back(str);
         }
     }
@@ -138,7 +139,7 @@ private:
     string email;
     string name;
     vector<tuple<string,int,string>> sessions;
-    int curr;
+    unordered_map<string, int> book_current_page;
     bool taken;
 
 public:
@@ -148,7 +149,6 @@ public:
         password = "";
         email = "";
         name = "";
-        curr = 1;
         taken = false;
     }
 
@@ -234,6 +234,10 @@ public:
     
     void pages_menu(book bk)
     {
+        string book_id = bk.get_title();
+        int& curr = book_current_page[book_id];
+        if(curr == 0)
+            curr = 1;
         cout << "Menu:\n";
         cout << "1: Next page\n";
         cout << "2: Previous page\n";
@@ -288,8 +292,11 @@ public:
 
     void print_current_page(book bk)
     {
-        
-        cout << "Current Page: " <<  curr << "\\" << bk.get_cnt_of_pages() << endl;
+        string book_id = bk.get_title();
+        int curr = book_current_page[book_id];
+        if(curr == 0)
+            curr = 1;
+        cout << "Current Page: " << curr << "\\" << bk.get_cnt_of_pages() << endl;
         cout << bk.get_pages()[curr-1] << "\n\n";
         pages_menu(bk);
 
@@ -329,6 +336,9 @@ public:
         }
         for(int i = 1; i <= sessions.size(); i++)
         {
+            int curr = book_current_page[get<0>(sessions[i-1])];
+            if(curr == 0)
+                curr = 1;
             cout << i << ") " << get<0>(sessions[i-1])
             << " (" << curr << "\\" << get<1>(sessions[i-1])
             << ") | Last read at: " << get<2>(sessions[i-1]) << endl;
@@ -341,9 +351,10 @@ public:
         cin >> choice;
         if(cin.fail())
         {
-            cout << "Invalid input! Expected an integer.\n\n";
+            cout << "Invalid input! Expected an integer.\n\n\n";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return books_form_my_history();
         }
 
         if(choice < 1 or choice > sessions.size())
@@ -515,7 +526,7 @@ public:
             if(str == all_books[i].get_ISBN())
             {
                 all_books.erase(all_books.begin() + i);
-                return void(cout << "Book removed successfully.\n");
+                return void(cout << "Book removed successfully.\n\n");
             }
         }
         cout << "This ISBN is not exist, please try again.\n\n";
@@ -585,12 +596,12 @@ void Sign_up()
     new_user.read();
     all_users.push_back(new_user);
     all_usernames.insert(new_user.get_username());
-    new_user.menu();
+    all_users.back().menu();
 }
 
 void Login()
 {
-    user us;
+    user* us_ptr = nullptr;
     admin ad;
     cout << "\nEnter username: ";
     string username;
@@ -610,7 +621,7 @@ void Login()
         }
         else if(all_admins[i].get_username() == username && all_admins[i].get_password() != password)
         {
-            return void(cout << "Wrong password, please try again.\n");
+            return void(cout << "Wrong password, please try again.\n\n");
         }
     }
     if(!found)
@@ -621,7 +632,7 @@ void Login()
             {
                 found = true;
                 user_or_not = true;
-                us = all_users[i];
+                us_ptr = &all_users[i];
             }
             else if(all_users[i].get_username() == username && all_users[i].get_password() != password)
             {
@@ -635,7 +646,7 @@ void Login()
     }
     if(user_or_not)
     {
-        us.menu();
+        us_ptr->menu();
     }
     else
     {
@@ -687,5 +698,4 @@ int main()
 {
     online_book();
     return 0;
-
 }
