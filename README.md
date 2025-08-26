@@ -39,7 +39,7 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
   Enter details: ISBN, title, author, and pages.
 
 - **Remove Books**  
-  Delete a book by ISBN.
+  Delete a book by its title.
 
 - **Remove Users**  
   Delete a user account by username.
