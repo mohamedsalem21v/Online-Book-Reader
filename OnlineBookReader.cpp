@@ -2,6 +2,29 @@
 #define sp " "
 using namespace std;
 
+int safe_input_int(int min, int max)
+{
+    int choice;
+    while (true)
+    {
+        cin >> choice;
+        if (cin.fail())
+        {
+            cout << "Invalid input! Expected an integer.\n\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+        if (choice < min || choice > max)
+        {
+            cout << "Out of range, please try again.\n\n";
+            continue;
+        }
+        cin.ignore();
+        return choice;
+    }
+}
+
 class book
 {
 private:
@@ -243,19 +266,7 @@ public:
         cout << "2: Previous page\n";
         cout << "3: Stop reading\n";
         cout << "Enter number in rage(1-3): ";
-        int choice;  
-        cin >> choice;
-        if(cin.fail())
-        {
-            cout << "Invalid input! Expected an integer.\n\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return pages_menu(bk);
-        }
-        if(choice < 1 or choice > 3)
-        {
-            return void(cout << "Out of range, please try again.\n\n");
-        }
+        int choice = safe_input_int(1,3);  
         if(choice == 1)
         {
             if(curr == bk.get_cnt_of_pages())
@@ -311,19 +322,7 @@ public:
         }
         cout << "\nWhich Book you want to read?\n";
         cout << "Enter number in range (1-" << all_books.size() << "): ";
-        int choice;
-        cin >> choice;
-        if(cin.fail())
-        {
-            cout << "Invalid input! Expected an integer.\n\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return books_form_the_system();
-        }
-        if(choice < 1 or choice > all_books.size())
-        {
-            return void(cout << "Out of range, please try again.\n\n");
-        }
+        int choice = safe_input_int(1,all_books.size());
         b = all_books[choice-1];
         print_current_page(b);
     }
@@ -347,28 +346,21 @@ public:
         cout << "\nWhich session you want to open?\n";
         cout << "Enter number in range (1-" << sessions.size() << "): ";
 
-        int choice;  
-        cin >> choice;
-        if(cin.fail())
-        {
-            cout << "Invalid input! Expected an integer.\n\n\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return books_form_my_history();
-        }
-
-        if(choice < 1 or choice > sessions.size())
-        {
-            return void(cout << "Out of range, please try again.\n\n");
-        }
+        int choice = safe_input_int(1,sessions.size());
+        bool found = false;
         for(int i = 0; i < all_books.size(); i++)
         {
             if(get<0>(sessions[choice-1]) == all_books[i].get_title())
             {
                 b = all_books[i];
+                found = true;
                 print_current_page(b);
                 break;
             }
+        }
+        if (!found) 
+        {
+            cout << "Book from this session not found in library.\n";
         }
     }
 
@@ -385,15 +377,7 @@ public:
             cout << "3: List & Select from Available Books\n";
             cout << "4: Logout\n";
             cout << "\nEnter a number in range (1-4): ";
-            int choice;  
-            cin >> choice;
-            if(cin.fail())
-            {
-                cout << "Invalid input! Expected an integer.\n\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
+            int choice = safe_input_int(1,4);
             cin.ignore();
             if(choice == 1)
             {
@@ -411,10 +395,6 @@ public:
             {
                 cout << "Exiting the online book reader system.\n" << endl;
                 break;
-            }
-            else
-            {
-                cout << "Out of range, Please try again.\n\n";
             }
         }
     }
@@ -516,6 +496,24 @@ public:
         all_books.push_back(b);
     }
 
+    void remove_user()
+    {
+        cout << "Enter Username: ";
+        string str;
+        getline(cin, str);
+        for (auto it = all_users.begin(); it != all_users.end(); ++it)
+        {
+            if (it->get_username() == str)
+            {
+                all_users.erase(it);
+                all_usernames.erase(str);
+                cout << "User '" << str << "' removed successfully.\n\n";
+                return;
+            }
+        }
+        cout << "User '" << str << "' not found.\n\n";
+    }
+
     void remove_book()
     {
         cout << "Enter ISBN: ";
@@ -541,17 +539,10 @@ public:
             cout << "1: View profile\n";
             cout << "2: Add a book\n";
             cout << "3: Remove a book\n";
-            cout << "4: Logout\n";
-            cout << "Enter a number in range (1-4): ";
-            int choice;  
-            cin >> choice;
-            if(cin.fail())
-            {
-                cout << "Invalid input! Expected an integer.\n\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
+            cout << "4: Remove a user\n";
+            cout << "5: Logout\n";
+            cout << "Enter a number in range (1-5): ";
+            int choice = safe_input_int(1,5);
             cin.ignore();
             if(choice == 1)
             {
@@ -567,12 +558,12 @@ public:
             }
             else if(choice == 4)
             {
-                cout << endl;
-                break;
+                remove_user();
             }
-            else
+            else if(choice == 5)
             {
-                cout << "Out of range, Please try again.\n\n";
+                cout << "Logged out.\n\n";
+                break;
             }
         }
     }
@@ -664,15 +655,7 @@ void online_book()
         cout << "Menu: \n";
         cout << "1: Login\n2: Sign up\n3: Exit program\n\n";
         cout << "Enter a number in range (1-3): ";
-        int choice;  
-        cin >> choice;
-        if(cin.fail())
-        {
-            cout << "Invalid input! Expected an integer.\n\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            continue;
-        }
+        int choice = safe_input_int(1,3);
         cin.ignore();
         if(choice == 1)
         {
@@ -686,10 +669,6 @@ void online_book()
         {
             cout << "Exiting the online book reader system.\n";
             break;
-        }
-        else
-        {
-            cout << "Out of range, Please try again.\n\n";
         }
     }
 }
