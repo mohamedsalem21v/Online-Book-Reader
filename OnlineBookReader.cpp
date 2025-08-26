@@ -73,14 +73,14 @@ public:
         cout << "Enter Author Name: ";
         getline(cin,str);
         set_author_name(str);
-        cout << "Enter How many pages: ";
+        cout << "Enter how many pages: ";
         int n;
         cin >> n;
         set_cnt_of_pages(n);
         vector<string> entered_pages;
         for(int i = 0; i < n; i++)
         {
-            cout << "Enter page # : " << i+1;  
+            cout << "Enter page # " << i+1 << ": "; 
             cin >> str;
             pages.push_back(str);
         }
@@ -687,4 +687,5 @@ int main()
 {
     online_book();
     return 0;
+
 }
