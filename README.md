@@ -61,4 +61,3 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
   Different menus and capabilities for users and admins.
 
 ---
-   g++ -o book_reader OnlineBookReader.cpp
