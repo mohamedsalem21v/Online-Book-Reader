@@ -9,6 +9,7 @@ This system supports two types of users:
 
 ## 🔹 Admin User
 - Adds books to the system.
+- Remove books from the system.
 
 ---
 
