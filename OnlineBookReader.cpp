@@ -10,17 +10,21 @@ int safe_input_int(int min, int max)
         cin >> choice;
         if (cin.fail())
         {
-            cout << "Invalid input! Expected an integer.\n\n";
+            cout << "Invalid input! Expected an integer.\n";
+            cout << "Please try again: ";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
         if (choice < min || choice > max)
         {
-            cout << "Out of range, please try again.\n\n";
+            cout << "Out of range, please try again.\n";
+            cout << "Please try again: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
-        cin.ignore();
+        
         return choice;
     }
 }
@@ -86,6 +90,7 @@ public:
 
     void add_book()
     {
+        cin.ignore();
         cout << "Enter ISBN: ";
         string str;
         getline(cin,str);
@@ -99,7 +104,7 @@ public:
         cout << "Enter How many pages: ";
         int n;
         cin >> n;
-        cin.ignore();
+        // cin.ignore();
         set_cnt_of_pages(n);
         vector<string> entered_pages;
         for(int i = 0; i < n; i++)
@@ -220,6 +225,7 @@ public:
     
     void read()
     {
+        cin.ignore();
         cout << "Enter username: ";
         string username;
         getline(cin,username);
@@ -307,7 +313,7 @@ public:
         int curr = book_current_page[book_id];
         if(curr == 0)
             curr = 1;
-        cout << "Current Page: " << curr << "\\" << bk.get_cnt_of_pages() << endl;
+        cout << "\nCurrent Page: " << curr << "\\" << bk.get_cnt_of_pages() << endl;
         cout << bk.get_pages()[curr-1] << "\n\n";
         pages_menu(bk);
 
@@ -378,7 +384,7 @@ public:
             cout << "4: Logout\n";
             cout << "\nEnter a number in range (1-4): ";
             int choice = safe_input_int(1,4);
-            cin.ignore();
+            // cin.ignore();
             if(choice == 1)
             {
                 view_profile();
@@ -499,6 +505,7 @@ public:
     void remove_user()
     {
         cout << "Enter Username: ";
+        cin.ignore();
         string str;
         getline(cin, str);
         for (auto it = all_users.begin(); it != all_users.end(); ++it)
@@ -517,6 +524,7 @@ public:
     void remove_book()
     {
         cout << "Enter ISBN: ";
+        cin.ignore();
         string str;
         getline(cin,str);
         for(int i = 0; i < all_books.size(); i++)
@@ -595,6 +603,7 @@ void Login()
     user* us_ptr = nullptr;
     admin ad;
     cout << "\nEnter username: ";
+    cin.ignore();
     string username;
     getline(cin,username);
 
@@ -656,7 +665,6 @@ void online_book()
         cout << "1: Login\n2: Sign up\n3: Exit program\n\n";
         cout << "Enter a number in range (1-3): ";
         int choice = safe_input_int(1,3);
-        cin.ignore();
         if(choice == 1)
         {
             Login();
