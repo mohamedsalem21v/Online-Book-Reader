@@ -505,7 +505,7 @@ public:
     void remove_user()
     {
         cout << "Enter Username: ";
-        cin.ignore();
+        // cin.ignore();
         string str;
         getline(cin, str);
         for (auto it = all_users.begin(); it != all_users.end(); ++it)
