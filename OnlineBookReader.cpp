@@ -535,7 +535,7 @@ public:
                 return void(cout << "Book removed successfully.\n\n");
             }
         }
-        cout << "This ISBN is not exist, please try again.\n\n";
+        cout << "This ISBN does not exist, please try again.\n\n";
     }
 
     void menu()
