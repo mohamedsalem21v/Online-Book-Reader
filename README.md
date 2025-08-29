@@ -61,3 +61,7 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
   Different menus and capabilities for users and admins.
 
 ---
+-
+## 📷 Screenshot
+
+![Book Reader Screenshot](Mermaid Chart-2025-08-29-121851.png)
