@@ -61,4 +61,4 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
   Different menus and capabilities for users and admins.
 ---
 ## 📷 Screenshot
-<img src="image.png" alt="Book Reader Screenshot" width="300"/>
+<img src="image.png" alt="Book Reader Screenshot" width="600"/>
