@@ -90,7 +90,7 @@ public:
 
     void add_book()
     {
-        cin.ignore();
+        // cin.ignore();
         cout << "Enter ISBN: ";
         string str;
         getline(cin,str);
@@ -104,7 +104,7 @@ public:
         cout << "Enter How many pages: ";
         int n;
         cin >> n;
-        // cin.ignore();
+        cin.ignore();
         set_cnt_of_pages(n);
         vector<string> entered_pages;
         for(int i = 0; i < n; i++)
@@ -113,48 +113,56 @@ public:
             getline(cin,str);
             pages.push_back(str);
         }
+        cout << "Book added successfully.\n\n";
     }
 
 };
 vector<book> all_books;
 void books_in_the_system()
 {
-    book b1;
-    b1.set_title("C++ how to program");
-    b1.set_ISBN("1221");
-    b1.set_author_name("Mohamed Salem");
-    b1.set_cnt_of_pages(3);
-    vector<string> pages_1(3);
-    pages_1[0] = "pg1";
-    pages_1[1] = "pg2";
-    pages_1[2] = "pg3";
-    b1.set_pages(pages_1);
+    book b;
+    ifstream fin("books_in_the_system.txt");
+    string line;
+    while(getline(fin,line))
+    {
+        book b;
+        stringstream ss(line);
 
-    book b2;
-    b2.set_title("Intro to algo");
-    b2.set_ISBN("123321");
-    b2.set_author_name("Mohamed Ahmed");
-    b2.set_cnt_of_pages(3);
-    vector<string> pages_2(3);
-    pages_2[0] = "pg1";
-    pages_2[1] = "pg2";
-    pages_2[2] = "pg3";
-    b2.set_pages(pages_2);
+        string title, isbn, author;
+        string pages_count_str;
+        int pages_count;
 
-    book b3;
-    b3.set_title("Data Structures in c++");
-    b3.set_ISBN("12344321");
-    b3.set_author_name("Mr Solom");
-    b3.set_cnt_of_pages(3);
-    vector<string> pages_3(3);
-    pages_3[0] = "pg1";
-    pages_3[1] = "pg2";
-    pages_3[2] = "pg3";
-    b3.set_pages(pages_3);
+        getline(ss, title, ',');
+        getline(ss, isbn, ',');
+        getline(ss, author, ',');
+        getline(ss, pages_count_str, ','); 
+        
+        pages_count = stoi(pages_count_str);
 
-    all_books.push_back(b1);
-    all_books.push_back(b2);
-    all_books.push_back(b3);
+        b.set_title(title);
+        b.set_ISBN(isbn);
+        b.set_author_name(author);
+        b.set_cnt_of_pages(pages_count);
+        
+        vector<string> book_pages;
+        string page;
+        for (int i = 0; i < pages_count; i++)
+        {
+            if (i < pages_count - 1)
+            {
+                getline(ss, page, ',');
+            }
+            else
+            {
+                getline(ss, page);
+            }
+            book_pages.push_back(page);
+        }
+
+        b.set_pages(book_pages);        
+        all_books.push_back(b);
+
+    }
 }
 
 
@@ -500,6 +508,14 @@ public:
         book b;
         b.add_book();
         all_books.push_back(b);
+        ofstream fout("books_in_the_system.txt", ios::app);
+        fout << b.get_title() << "," << b.get_ISBN() << "," << b.get_author_name() << "," << b.get_cnt_of_pages();
+        for(int i = 0; i < b.get_cnt_of_pages(); i++)
+        {
+            fout << "," << b.get_pages()[i];
+        }
+        fout << "\n";
+        fout.close();
     }
 
     void remove_user()
@@ -521,21 +537,61 @@ public:
         cout << "User '" << str << "' not found.\n\n";
     }
 
-    void remove_book()
+    bool remove_book_by_title(const string& title_to_remove) 
     {
-        cout << "Enter ISBN: ";
-        cin.ignore();
-        string str;
-        getline(cin,str);
-        for(int i = 0; i < all_books.size(); i++)
+        // Step 1: Read all books from the file
+        ifstream fin("books_in_the_system.txt");
+        if (!fin)
         {
-            if(str == all_books[i].get_ISBN())
+            cerr << "Error opening file for reading!" << endl;
+            return false;
+        }
+
+        vector<string> lines;
+        string line;
+        bool found = false;
+
+        // Step 2: Store all lines except the one to be removed
+        while (getline(fin, line))
+        {
+            // Extract the title from the line (first value before comma)
+            string current_title = line.substr(0, line.find(','));
+
+            // If this is not the line we want to remove, keep it
+            if (current_title != title_to_remove)
             {
-                all_books.erase(all_books.begin() + i);
-                return void(cout << "Book removed successfully.\n\n");
+                lines.push_back(line);
+            }
+            else
+            {
+                found = true; // We found the book to remove
             }
         }
-        cout << "This ISBN does not exist, please try again.\n\n";
+        fin.close();
+
+        // If the book wasn't found, no need to rewrite the file
+        if (!found)
+        {
+            cout << "Book with title \"" << title_to_remove << "\" not found.\n\n";
+            return false;
+        }
+
+        // Step 3: Write the remaining lines back to the file
+        ofstream fout("books_in_the_system.txt");
+        if (!fout)
+        {
+            cerr << "Error opening file for writing!\n\n";
+            return false;
+        }
+
+        for (const string &remaining_line : lines)
+        {
+            fout << remaining_line << endl;
+        }
+        fout.close();
+
+        cout << "Book with title \"" << title_to_remove << "\" successfully removed.\n\n";
+        return true;
     }
 
     void menu()
@@ -562,7 +618,10 @@ public:
             }
             else if(choice == 3)
             {
-                remove_book();
+                cout << "Enter the title of the book to remove: ";
+                string title_to_remove;
+                getline(cin, title_to_remove);
+                remove_book_by_title(title_to_remove);
             }
             else if(choice == 4)
             {
@@ -602,7 +661,7 @@ void Login()
 {
     user* us_ptr = nullptr;
     admin ad;
-    cout << "\nEnter username: ";
+    cout << "Enter username: ";
     cin.ignore();
     string username;
     getline(cin,username);
