@@ -224,7 +224,7 @@ public:
     string get_current_time_date() 
     {
 	    // src: https://stackoverflow.com/questions/17223096/outputting-date-and-time-in-c-using-stdchrono
-	    auto now = std::chrono::system_clock::now();
+        auto now = std::chrono::system_clock::now();
 	    auto in_time_t = std::chrono::system_clock::to_time_t(now);
 	    std::stringstream ss;
 	    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
@@ -281,6 +281,7 @@ public:
         cout << "3: Stop reading\n";
         cout << "Enter number in rage(1-3): ";
         int choice = safe_input_int(1,3);  
+        
         if(choice == 1)
         {
             if(curr == bk.get_cnt_of_pages())
@@ -321,50 +322,51 @@ public:
         int curr = book_current_page[book_id];
         if(curr == 0)
             curr = 1;
+
         cout << "\nCurrent Page: " << curr << "\\" << bk.get_cnt_of_pages() << endl;
         cout << bk.get_pages()[curr-1] << "\n\n";
         pages_menu(bk);
-
     }
     
     book b;
     void books_form_the_system()
     {
         cout << "\nOur current book collection:\n";
-        for(int i = 1; i <= all_books.size(); i++){
-            cout << "  " << i << ") " << all_books[i-1].get_title() << endl;
+        for (int i = 1; i <= all_books.size(); i++)
+        {
+            cout << "  " << i << ") " << all_books[i - 1].get_title() << endl;
         }
         cout << "\nWhich Book you want to read?\n";
         cout << "Enter number in range (1-" << all_books.size() << "): ";
-        int choice = safe_input_int(1,all_books.size());
-        b = all_books[choice-1];
+        int choice = safe_input_int(1, all_books.size());
+        b = all_books[choice - 1];
         print_current_page(b);
     }
-    
+
     void books_form_my_history()
     {
-        if(sessions.size() == 0)
+        if (sessions.size() == 0)
         {
             return void(cout << "You have no reading history yet, please read a book from the system first.\n\n");
         }
-        for(int i = 1; i <= sessions.size(); i++)
+        for (int i = 1; i <= sessions.size(); i++)
         {
-            int curr = book_current_page[get<0>(sessions[i-1])];
-            if(curr == 0)
+            int curr = book_current_page[get<0>(sessions[i - 1])];
+            if (curr == 0)
                 curr = 1;
-            cout << i << ") " << get<0>(sessions[i-1])
-            << " (" << curr << "\\" << get<1>(sessions[i-1])
-            << ") | Last read at: " << get<2>(sessions[i-1]) << endl;
+            cout << i << ") " << get<0>(sessions[i - 1])
+                 << " (" << curr << "\\" << get<1>(sessions[i - 1])
+                 << ") | Last read at: " << get<2>(sessions[i - 1]) << endl;
         }
 
         cout << "\nWhich session you want to open?\n";
         cout << "Enter number in range (1-" << sessions.size() << "): ";
 
-        int choice = safe_input_int(1,sessions.size());
+        int choice = safe_input_int(1, sessions.size());
         bool found = false;
-        for(int i = 0; i < all_books.size(); i++)
+        for (int i = 0; i < all_books.size(); i++)
         {
-            if(get<0>(sessions[choice-1]) == all_books[i].get_title())
+            if (get<0>(sessions[choice - 1]) == all_books[i].get_title())
             {
                 b = all_books[i];
                 found = true;
@@ -372,7 +374,7 @@ public:
                 break;
             }
         }
-        if (!found) 
+        if (!found)
         {
             cout << "Book from this session not found in library.\n";
         }
@@ -468,7 +470,7 @@ public:
     
     void read()
     {
-        cout << "\nEnter username: ";
+        cout << "Enter username: ";
         string username;
         getline(cin,username);
 
@@ -539,7 +541,6 @@ public:
 
     bool remove_book_by_title(const string& title_to_remove) 
     {
-        // Step 1: Read all books from the file
         ifstream fin("books_in_the_system.txt");
         if (!fin)
         {
@@ -549,34 +550,29 @@ public:
 
         vector<string> lines;
         string line;
-        bool found = false;
 
-        // Step 2: Store all lines except the one to be removed
+        bool found = false;
         while (getline(fin, line))
         {
-            // Extract the title from the line (first value before comma)
             string current_title = line.substr(0, line.find(','));
 
-            // If this is not the line we want to remove, keep it
             if (current_title != title_to_remove)
             {
                 lines.push_back(line);
             }
             else
             {
-                found = true; // We found the book to remove
+                found = true; 
             }
         }
         fin.close();
 
-        // If the book wasn't found, no need to rewrite the file
         if (!found)
         {
             cout << "Book with title \"" << title_to_remove << "\" not found.\n\n";
             return false;
         }
 
-        // Step 3: Write the remaining lines back to the file
         ofstream fout("books_in_the_system.txt");
         if (!fout)
         {
@@ -589,64 +585,171 @@ public:
             fout << remaining_line << endl;
         }
         fout.close();
-
+        for (auto it = all_books.begin(); it != all_books.end(); it++)
+        {
+            if (it->get_title() == title_to_remove)
+            {
+                all_books.erase(it);
+                break; 
+            }
+        }
         cout << "Book with title \"" << title_to_remove << "\" successfully removed.\n\n";
         return true;
     }
-
-    void menu()
+    
+    void show_all_users()
     {
-        cout << "\nHello " << get_name() << " | Admin view\n";
-        while(true)
+        cout << string(80, '-') << endl;
+        cout << left << setw(18) << "Name"
+             << setw(18) << "Username"
+             << setw(30) << "Email"
+             << setw(20) << "Password" << endl;
+        cout << string(80, '-') << endl;
+
+        // Print table rows
+        for (auto &u : all_users)
         {
-            cout << "Menu:\n";
-            cout << "1: View profile\n";
-            cout << "2: Add a book\n";
-            cout << "3: Remove a book\n";
-            cout << "4: Remove a user\n";
-            cout << "5: Logout\n";
-            cout << "Enter a number in range (1-5): ";
-            int choice = safe_input_int(1,5);
-            cin.ignore();
-            if(choice == 1)
-            {
-                view_profile();
-            }
-            else if(choice == 2)
-            {
-                add_book(); 
-            }
-            else if(choice == 3)
-            {
-                cout << "Enter the title of the book to remove: ";
-                string title_to_remove;
-                getline(cin, title_to_remove);
-                remove_book_by_title(title_to_remove);
-            }
-            else if(choice == 4)
-            {
-                remove_user();
-            }
-            else if(choice == 5)
-            {
-                cout << "Logged out.\n\n";
-                break;
-            }
+            cout << left << setw(18) << u.get_name()
+                 << setw(18) << u.get_username()
+                 << setw(30) << u.get_email()
+                 << setw(20) << u.get_password() << endl;
         }
+        cout << string(80, '-') << endl;
+        cout << endl;
     }
+    
+    void show_all_books()
+    {
+        cout << string(80, '-') << endl;
+        cout << left << setw(30) << "Title"
+             << setw(20) << "Author"
+             << setw(15) << "ISBN"
+             << setw(10) << "Pages" << endl;
+        cout << string(80, '-') << endl;
+
+        for (auto &b : all_books)
+        {
+            cout << left << setw(30) << b.get_title()
+                 << setw(20) << b.get_author_name()
+                 << setw(15) << b.get_ISBN()
+                 << setw(10) << b.get_cnt_of_pages() << endl;
+        }
+        cout << string(80, '-') << endl;
+        cout << endl;
+    }
+
 };
 vector<admin> all_admins;
 void admins_in_the_system()
 {
-    admin ad1;
-    ad1.set_name("Mohammed Salem");
-    ad1.set_password("msms1234");
-    ad1.set_email("mohamedsalem@gmail.com");
-    ad1.set_username("momosolom");
-    all_admins.push_back(ad1);
-    all_usernames.insert(ad1.get_username());
+    string line;
+    ifstream fin("admins_in_the_system.txt");
+    while(getline(fin,line))
+    {
+        admin ad;
+        stringstream ss(line);
+
+        string name, password, email, username;
+
+        getline(ss, name, ',');
+        getline(ss, password, ',');
+        getline(ss, email, ',');
+        getline(ss, username, ',');
+
+        ad.set_name(name);
+        ad.set_password(password);
+        ad.set_email(email);
+        ad.set_username(username);
+
+        all_admins.push_back(ad);
+        all_usernames.insert(username);
+    }
+    fin.close();
 }
 
+void admin_menu(admin ad)
+{
+    cout << "\nHello " << ad.get_name() << " | Admin view\n";
+    while(true)
+    {
+        cout << "Menu:\n";
+        cout << "1: View profile\n";
+        cout << "2: Add a book\n";
+        cout << "3: Add an admin\n";
+        cout << "4: Remove a book\n";
+        cout << "5: Remove a user\n";
+        cout << "6: Show all users\n";
+        cout << "7: Show all books\n";
+        cout << "8: Show all admins\n";
+        cout << "9: Logout\n";
+        cout << "Enter a number in range (1-9): ";
+        int choice = safe_input_int(1,9);
+        cin.ignore();
+        if(choice == 1)
+        {
+            ad.view_profile();
+        }
+        else if(choice == 2)
+        {
+            ad.add_book(); 
+        }
+        else if(choice == 3)
+        {
+            admin new_admin;
+            new_admin.read();
+            all_admins.push_back(new_admin);
+            all_usernames.insert(new_admin.get_username());
+            ofstream fout("admins_in_the_system.txt", ios::app);
+            fout << new_admin.get_name() << "," << new_admin.get_password() << "," << new_admin.get_email() << "," << new_admin.get_username() << "\n";
+            fout.close();
+            cout << "Admin added successfully.\n\n";
+        }
+        else if(choice == 4)
+        {
+            cout << "Enter the title of the book to remove: ";
+            string title_to_remove;
+            getline(cin, title_to_remove);
+            ad.remove_book_by_title(title_to_remove);
+        }
+        else if(choice == 5)
+        {
+            ad.remove_user();
+        }
+        else if(choice == 6)
+        {
+            ad.show_all_users();
+        }
+        else if(choice == 7)
+        {
+            ad.show_all_books();
+        }
+        else if(choice == 8)
+        {
+            cout << string(80, '-') << endl;
+            cout << left << setw(18) << "Name"
+                 << setw(18) << "Username"
+                 << setw(30) << "Email"
+                 << setw(20) << "Password" << endl;
+            cout << string(80, '-') << endl;
+
+            for (auto &a : all_admins)
+            {
+                cout << left << setw(18) << a.get_name()
+                     << setw(18) << a.get_username()
+                     << setw(30) << a.get_email()
+                     << setw(20) << a.get_password() << endl;
+            }
+            cout << string(80, '-') << endl;
+            cout << endl;
+        }
+        
+        else if(choice == 9)
+        {
+            cout << "Logged out.\n\n";
+            break;
+        }
+    }
+}
 
 void Sign_up()
 {
@@ -709,7 +812,7 @@ void Login()
     }
     else
     {
-        ad.menu();
+        admin_menu(ad);
     }
 
 }
