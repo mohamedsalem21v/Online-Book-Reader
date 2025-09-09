@@ -111,8 +111,3 @@ Supports **user and admin accounts**, **book management**, **reading tracking wi
 - Usernames are unique across both users and admins.  
 - Reading sessions are tracked per user and per book, enabling resume capability.  
 
----
-
-## 📷 Screenshot
-
-<img src="image.png" alt="Book Reader Screenshot" width="600"/>
