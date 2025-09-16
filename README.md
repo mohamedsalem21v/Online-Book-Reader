@@ -69,7 +69,7 @@ Supports **user and admin accounts**, **book management**, **reading tracking wi
 
 - **Admin/User Separation**  
   Different menus and capabilities for users and admins.
-
+  
 ---
 
 ## 🧭 Usage Overview
