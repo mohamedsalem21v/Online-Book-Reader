@@ -3,7 +3,7 @@
 #define sp " "
 using namespace std;
 
-class admin
+class admin : public user
 {
 private:
     string username;
@@ -12,47 +12,8 @@ private:
     string name;
 
 public:
-    admin()
-    {
-        username = "";
-        password = "";
-        email = "";
-        name = "";
-    }
-    void set_username(string s)
-    {
-        username = s;
-    }
-    void set_password(string s)
-    {
-        password = s;
-    }
-    void set_email(string s)
-    {
-        email = s;
-    }
-    void set_name(string s)
-    {
-        name = s;
-    }
+    admin(): user(){}
 
-    string get_username()
-    {
-        return username;
-    }
-    string get_password()
-    {
-        return password;
-    }
-    string get_email()
-    {
-        return email;
-    }
-    string get_name()
-    {
-        return name;
-    }
-    
     void read()
     {
         cout << "Enter username: ";

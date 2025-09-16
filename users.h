@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "books.h"
+#include "sessions.h"
 #include "SafeInput.h"
 #define sp " "
 using namespace std;
@@ -12,7 +13,7 @@ private:
     string password;
     string email;
     string name;
-    vector<tuple<string,int,string>> sessions;
+    vector<session> sessions;
     unordered_map<string, int> book_current_page;
     bool taken;
 
@@ -26,21 +27,21 @@ public:
         taken = false;
     }
 
-    void set_username(string s)
+    void set_username(string username)
     {
-        username = s;
+        this->username = username;
     }
-    void set_password(string s)
+    void set_password(string password)
     {
-        password = s;
+        this->password = password;
     }
-    void set_email(string s)
+    void set_email(string email)
     {
-        email = s;
+        this->email = email;
     }
-    void set_name(string s)
+    void set_name(string name)
     {
-        name = s;
+        this->name = name;
     }
 
     string get_username()
@@ -149,7 +150,11 @@ public:
         else
         {
             cout << "Stopping reading " << bk.get_title() << ".\n";
-            sessions.push_back({bk.get_title(), bk.get_cnt_of_pages(), get_current_time_date()});
+            session s;
+            s.set_book_title(bk.get_title());
+            s.set_last_page(bk.get_cnt_of_pages());
+            s.set_last_read_time(get_current_time_date());
+            sessions.push_back(s);
             return;
         }
     }
@@ -189,12 +194,12 @@ public:
         }
         for (int i = 1; i <= sessions.size(); i++)
         {
-            int curr = book_current_page[get<0>(sessions[i - 1])];
+            int curr = book_current_page[sessions[i-1].get_book_title()];
             if (curr == 0)
                 curr = 1;
-            cout << i << ") " << get<0>(sessions[i - 1])
-                 << " (" << curr << "\\" << get<1>(sessions[i - 1])
-                 << ") | Last read at: " << get<2>(sessions[i - 1]) << endl;
+            cout << i << ") " << sessions[i - 1].get_book_title()
+                 << " (" << curr << "\\" << sessions[i - 1].get_last_page()
+                 << ") | Last read at: " << sessions[i-1].get_last_read_time() << endl;
         }
 
         cout << "\nWhich session you want to open?\n";
@@ -204,7 +209,7 @@ public:
         bool found = false;
         for (int i = 0; i < all_books.size(); i++)
         {
-            if (get<0>(sessions[choice - 1]) == all_books[i].get_title())
+            if (sessions[choice - 1].get_book_title() == all_books[i].get_title())
             {
                 b = all_books[i];
                 found = true;
