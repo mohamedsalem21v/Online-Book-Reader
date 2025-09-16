@@ -69,7 +69,7 @@ Supports **user and admin accounts**, **book management**, **reading tracking wi
 
 - **Admin/User Separation**  
   Different menus and capabilities for users and admins.
-
+  
 ---
 
 ## 🧭 Usage Overview
@@ -110,4 +110,3 @@ Supports **user and admin accounts**, **book management**, **reading tracking wi
 - Use the exact ranges shown in menus for valid input (robust input validation is included).  
 - Usernames are unique across both users and admins.  
 - Reading sessions are tracked per user and per book, enabling resume capability.  
-
