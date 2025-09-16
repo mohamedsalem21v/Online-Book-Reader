@@ -60,5 +60,3 @@ Supports **user** and **admin** accounts, **book management**, and **reading tra
 - **Admin/User Separation**  
   Different menus and capabilities for users and admins.
 ---
-## 📷 Screenshot
-<img src="image.png" alt="Book Reader Screenshot" width="600"/>
