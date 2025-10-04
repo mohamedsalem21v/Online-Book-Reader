@@ -56,7 +56,7 @@ public:
         book b;
         b.add_book();
         all_books.push_back(b);
-        ofstream fout("books_in_the_system.txt", ios::app);
+        ofstream fout("books_in_the_system.csv", ios::app);
         fout << b.get_title() << "," << b.get_ISBN() << "," << b.get_author_name() << "," << b.get_cnt_of_pages();
         for(int i = 0; i < b.get_cnt_of_pages(); i++)
         {
@@ -87,7 +87,7 @@ public:
 
     bool remove_book_by_title(const string& title_to_remove) 
     {
-        ifstream fin("books_in_the_system.txt");
+        ifstream fin("books_in_the_system.csv");
         if (!fin)
         {
             cerr << "Error opening file for reading!" << endl;
@@ -119,7 +119,7 @@ public:
             return false;
         }
 
-        ofstream fout("books_in_the_system.txt");
+        ofstream fout("books_in_the_system.csv");
         if (!fout)
         {
             cerr << "Error opening file for writing!\n\n";
@@ -191,9 +191,15 @@ vector<admin> all_admins;
 void admins_in_the_system()
 {
     string line;
-    ifstream fin("admins_in_the_system.txt");
+    ifstream fin("admins_in_the_system.csv");
+    bool header = true;
     while(getline(fin,line))
     {
+        if(header)
+        {
+            header = false;
+            continue;
+        }
         admin ad;
         stringstream ss(line);
 
@@ -247,7 +253,7 @@ void admin_menu(admin ad)
             new_admin.read();
             all_admins.push_back(new_admin);
             all_usernames.insert(new_admin.get_username());
-            ofstream fout("admins_in_the_system.txt", ios::app);
+            ofstream fout("admins_in_the_system.csv", ios::app);
             fout << new_admin.get_name() << "," << new_admin.get_password() 
             << "," << new_admin.get_email() << "," << new_admin.get_username() << "\n";
 

@@ -94,10 +94,17 @@ vector<book> all_books;
 void books_in_the_system()
 {
     book b;
-    ifstream fin("books_in_the_system.txt");
+    ifstream fin("books_in_the_system.csv");
     string line;
+    bool header = true;
     while(getline(fin,line))
     {
+        if(header)
+        {
+            header = false;
+            continue;
+        }
+        
         book b;
         stringstream ss(line);
 
