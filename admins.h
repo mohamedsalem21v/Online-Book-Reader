@@ -5,12 +5,6 @@ using namespace std;
 
 class admin : public user
 {
-private:
-    string username;
-    string password;
-    string email;
-    string name;
-
 public:
     admin(): user(){}
 
